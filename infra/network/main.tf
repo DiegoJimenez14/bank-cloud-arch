@@ -1,25 +1,12 @@
-########################################
-# Variables esperadas por este módulo
-# (deben existir en variables.tf)
-# - vpc_cidr
-# - name_prefix
-# - environment
-# - azs
-# - public_subnets
-# - private_subnets
-########################################
 
-########################################
-# Locals
-########################################
 locals {
   public_map  = zipmap(var.azs, var.public_subnets)
   private_map = zipmap(var.azs, var.private_subnets)
 }
 
-########################################
+
 # VPC
-########################################
+
 resource "aws_vpc" "this" {
   cidr_block           = var.vpc_cidr
   enable_dns_support   = true
@@ -31,9 +18,9 @@ resource "aws_vpc" "this" {
   }
 }
 
-########################################
+
 # Internet Gateway (IGW)
-########################################
+
 resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.this.id
 
@@ -43,9 +30,9 @@ resource "aws_internet_gateway" "igw" {
   }
 }
 
-########################################
+
 # Subnets Públicas
-########################################
+
 resource "aws_subnet" "public" {
   for_each = local.public_map
 
@@ -61,9 +48,9 @@ resource "aws_subnet" "public" {
   }
 }
 
-########################################
+
 # Subnets Privadas
-########################################
+
 resource "aws_subnet" "private" {
   for_each = local.private_map
 
@@ -79,9 +66,9 @@ resource "aws_subnet" "private" {
   }
 }
 
-########################################
+
 # Tabla de Ruteo Pública + Ruta a IGW
-########################################
+
 resource "aws_route_table" "public" {
   vpc_id = aws_vpc.this.id
 
@@ -103,9 +90,9 @@ resource "aws_route_table_association" "public_assoc" {
   route_table_id = aws_route_table.public.id
 }
 
-########################################
+
 # Elastic IPs para NAT Gateways
-########################################
+
 resource "aws_eip" "nat" {
   for_each = toset(var.azs)
   domain   = "vpc"
@@ -116,9 +103,8 @@ resource "aws_eip" "nat" {
   }
 }
 
-########################################
 # NAT Gateways (uno por AZ)
-########################################
+
 resource "aws_nat_gateway" "gw" {
   for_each      = aws_subnet.public
   allocation_id = aws_eip.nat[each.key].id
@@ -133,9 +119,9 @@ resource "aws_nat_gateway" "gw" {
   depends_on = [aws_internet_gateway.igw]
 }
 
-########################################
+
 # Tablas de Ruteo Privadas + Rutas a NAT
-########################################
+
 resource "aws_route_table" "private" {
   for_each = toset(var.azs)
   vpc_id   = aws_vpc.this.id
