@@ -1,7 +1,7 @@
-# Módulo bootstrap de solo lectura: no crea recursos.
+# Módulo bootstrap de solo lectura:
 # Lee el bucket S3 y la tabla DynamoDB existentes por nombre y los expone como outputs.
 
-# Usa el provider AWS del root; no declares provider aquí.
+# Usa el provider AWS del root;
 
 # Datos del bucket S3 donde vive el estado remoto
 data "aws_s3_bucket" "state" {
