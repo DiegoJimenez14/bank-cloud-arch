@@ -9,22 +9,20 @@ terraform {
   }
 }
 
-# Provider por defecto para la mayoría de módulos
 provider "aws" {
   region  = "us-east-1"
   profile = "default"
 }
 
-# Provider aliased específicamente para el módulo "network"
 provider "aws" {
   alias   = "network"
   region  = "us-east-1"
   profile = "default"
 }
 
-# -------------------------------------------------------------------
+
 # Módulos
-# -------------------------------------------------------------------
+
 
 module "bootstrap" {
   source = "./bootstrap"
@@ -33,7 +31,7 @@ module "bootstrap" {
 module "network" {
   source = "./network"
 
-  # IMPORTANTe: el módulo network usará el provider aliased "aws.network"
+  # el módulo network usará el provider aliased "aws.network"
   providers = {
     aws = aws.network
   }
@@ -51,9 +49,7 @@ module "security" {
   allowed_ssh_cidr = "0.0.0.0/32" # cambia a tu IP/32 real si quieres abrir SSH al bastion
 }
 
-# -------------------------------------------------------------------
 # Outputs globales
-# -------------------------------------------------------------------
 
 output "state_bucket" {
   description = "Bucket S3 para el estado de Terraform"
