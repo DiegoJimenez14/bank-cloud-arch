@@ -1,0 +1,13 @@
+terraform {
+  backend "s3" {
+    bucket         = "bank-terraform-state-dev"
+    key            = "network/terraform.tfstate"
+    region         = "us-east-1"
+    dynamodb_table = "bank-terraform-locks"
+    encrypt        = true
+  }
+}
+
+
+
+
