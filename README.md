@@ -1,11 +1,10 @@
-# 🏦 Bank Cloud Architecture — AWS + Terraform
+#  Bank Cloud Architecture — AWS + Terraform
 
 Este repo contiene una infraestructura base para un **banco en la nube**, usando **Terraform** sobre **AWS**.  
 La idea es tener un setup **sólido, limpio y reutilizable**, pero a un nivel manejable (no ultra corporativo todavía).
 
----
 
-## 🚀 ¿Qué incluye?
+¿Qué incluye?
 
 - **Estado remoto**:
   - S3 bucket para guardar el `terraform.tfstate`.
